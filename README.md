@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mamal72/axel-downloader.svg?branch=master)](https://travis-ci.org/mamal72/axel-downloader)
+[![Coverage Status](https://coveralls.io/repos/github/mamal72/axel-downloader/badge.svg)](https://coveralls.io/github/mamal72/axel-downloader)
 [![license](https://img.shields.io/github/license/mamal72/axel-downloader.svg)](https://github.com/mamal72/axel-downloader/blob/master/LICENSE)
 
 # axel-downloader

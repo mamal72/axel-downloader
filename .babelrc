@@ -1,0 +1,15 @@
+{
+  "presets": [
+    [
+      "env", {
+        "targets": {
+          "node": 4
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    "babel-plugin-syntax-flow",
+    "babel-plugin-transform-flow-strip-types"
+  ]
+}

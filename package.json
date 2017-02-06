@@ -1,0 +1,40 @@
+{
+  "name": "axel-downloader",
+  "version": "0.1.5",
+  "description": "A node wrapper around axel downloader",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "lint": "eslint src",
+    "lint-fix": "eslint src --fix",
+    "build": "npm run lint && babel src/ -d lib/",
+    "dev": "babel -w src/ -d lib/",
+    "test": "ava -v",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
+  },
+  "repository": "https://github.com/mamal72/axel-downloader",
+  "author": "Mohamad Jahani <m4m4lj@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "ava": "^0.18.1",
+    "babel-cli": "^6.22.2",
+    "babel-plugin-syntax-flow": "^6.18.0",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-preset-env": "^1.1.8",
+    "coveralls": "^2.11.16",
+    "eslint": "^3.15.0",
+    "eslint-config-airbnb-base": "^11.0.1",
+    "eslint-plugin-import": "^2.2.0",
+    "nyc": "^10.1.2"
+  },
+  "dependencies": {
+    "babel-eslint": "^7.1.1",
+    "stream-splitter": "^0.3.2"
+  },
+  "ava": {
+    "require": "babel-register",
+    "babel": "inherit"
+  }
+}

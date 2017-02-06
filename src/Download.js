@@ -56,7 +56,7 @@ export default class Download extends EventEmitter {
   }
 
   // Stop download
-  stop() {
+  stop(): void {
     if (this.childProcess) {
       this.childProcess.kill();
       this.childProcess = null;

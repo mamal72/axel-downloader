@@ -7,7 +7,7 @@ A node.js wrapper around [axel downloader](https://github.com/eribertomota/axel)
 
 ## Installation
 
-1. Install [Axel](https://github.com/eribertomota/axel).
+- Install [Axel](https://github.com/eribertomota/axel).
 
 <details>
 <summary>macOS</summary>
@@ -27,7 +27,7 @@ sudo apt install axel
 
 </details>
 
-2. Install `axel-downloader` from `npm`:
+- Install `axel-downloader` from `npm`:
 
 ```bash
 yarn add axel-downloader

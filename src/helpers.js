@@ -1,31 +1,60 @@
-// @flow
 import StreamSplitter from 'stream-splitter';
 
-import { DownloadProgress } from './types';
 
+// Download operations
+const downloadOperations = [
+  {
+    type: 'start',
+    pattern: /Starting download/,
+    props: []
+  },
+  {
+    type: 'progress',
+    pattern: /\[\s+(\d+)%][\s.]+\[\s*(\d+\.?\d)KB\/s]/,
+    props: [
+      'progress',
+      'speed'
+    ]
+  },
+  {
+    type: 'connection-finished',
+    pattern: /Connection\s(\d+)\sfinished/,
+    props: [
+      'number'
+    ]
+  }
+];
 
 // Get a stream that splits on a token
-export function splitStream(stream: any, token: string = '\n'): any {
+export function splitStream(stream, token = '\n') {
   return stream.pipe(StreamSplitter(token));
 }
 
-// Get progress and speed of download from a line of string stdout
-export function parseProgress(rawDownloadProgress: string): DownloadProgress {
-  const regexPattern = /\[\s+(\d+)%][\s.]+\[\s*(\d+\.?\d)KB\/s]/;
-  const matchedPatterns = rawDownloadProgress.match(regexPattern);
+// Parse stdout and return operation type and params
+export function parseProgress(rawDownloadProgress) {
+  const operation = downloadOperations.find(item => rawDownloadProgress.match(item.pattern));
 
-  if (!matchedPatterns) {
+  if (!operation) {
     return {
-      downloading: false,
-      progress: 0,
-      speed: 0
+      type: 'none'
     };
   }
 
-  const [progress, speed] = [Number(matchedPatterns[1]), Number(matchedPatterns[2])];
-  return {
-    downloading: true,
-    progress,
-    speed
-  };
+  const matchedPattern = rawDownloadProgress.match(operation.pattern);
+  matchedPattern.shift();
+
+  const result = operation.props.reduce((acc, curr) => (
+    {
+      type: acc.type,
+      data: {
+        ...acc.data,
+        [curr]: matchedPattern.shift()
+      }
+    }
+  ), {
+    type: operation.type,
+    data: {}
+  });
+
+  return result;
 }

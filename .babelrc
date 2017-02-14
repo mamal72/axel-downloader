@@ -9,7 +9,6 @@
     ]
   ],
   "plugins": [
-    "babel-plugin-syntax-flow",
-    "babel-plugin-transform-flow-strip-types"
+    ["transform-object-rest-spread", { "useBuiltIns": true }]
   ]
 }

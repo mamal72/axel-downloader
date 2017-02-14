@@ -4,17 +4,15 @@ import { parseProgress } from '../src/helpers';
 
 
 test('wrong raw progress', t => {
-  const { downloading, progress, speed } = parseProgress('some wrong raw progress data');
-  t.is(downloading, false);
-  t.is(progress, 0);
-  t.is(speed, 0);
+  const { type } = parseProgress('some wrong raw progress data');
+  t.is(type, 'none');
 });
 
 test('correct raw progress', t => {
-  const { downloading, progress, speed } = parseProgress(
+  const { type, data } = parseProgress(
     '[  79%]  .......... .......... .......... .......... ..........  [   3412.9KB/s]'
   );
-  t.is(downloading, true);
-  t.is(progress, 79);
-  t.is(speed, 3412.9);
+  t.is(type, 'progress');
+  t.is(data.progress, '79');
+  t.is(data.speed, '3412.9');
 });

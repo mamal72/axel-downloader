@@ -65,17 +65,19 @@ download.on('progress', data => {
 download.on('error', err => {
   console.log('Error', err);
 });
+download.on('connection-finished', data => {
+  console.log('Connection Finished', data);
+});
 download.on('finish', () => {
   console.log('Download Finished!');
 });
 download.on('stop', () => {
-  console.log('Download Stoped!');
+  console.log('Download Stopped!');
 });
 download.start();
-
 ```
 
-`Download` class inherits from EventEmitter. You can listen on it for `start`, `progress`, `error`, `finish`, `stop` events.
+`Download` class inherits from EventEmitter. You can listen on it for `start`, `progress`, `error`, `connection-finished`, `finish`, `stop` events.
 
 *More details will be added.*
 

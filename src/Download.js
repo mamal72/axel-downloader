@@ -1,22 +1,21 @@
-// @flow
 import EventEmitter from 'events';
+import deepEqual from 'deep-equal';
 import { spawn } from 'child_process';
 
 import { splitStream, parseProgress } from './helpers';
-import { DownloadOptions } from './types';
 
 
 // A class for download task
 export default class Download extends EventEmitter {
   constructor(
-    url: string,
-    downloadPath: string = process.cwd(),
+    url,
+    downloadPath = process.cwd(),
     {
       connections = 16,
       maxSpeed = 0,
       userAgent,
       headers = []
-    }: DownloadOptions = {}
+    } = {}
   ) {
     super();
 
@@ -30,10 +29,11 @@ export default class Download extends EventEmitter {
     this.userAgent = userAgent;
     this.headers = headers;
     this.childProcess = null;
+    this.status = {};
   }
 
   // Start download
-  start(): void {
+  start() {
     Download.checkAxel();
 
     this.childProcess = spawn('axel', this.getCommandArgs());
@@ -43,20 +43,37 @@ export default class Download extends EventEmitter {
 
     stdout.on('token', (data) => {
       const rawDownloadProgress = data.toString();
-      const progressInfo = parseProgress(rawDownloadProgress);
-      this.emit('progress', progressInfo);
+      const operation = parseProgress(rawDownloadProgress);
+
+      switch (operation.type) {
+        case 'start':
+          this.emit('start');
+          break;
+        case 'progress':
+          if (!deepEqual(operation.data, this.status)) {
+            this.status = operation.data;
+            this.emit('progress', operation.data);
+          }
+          break;
+        case 'connection-finished':
+          this.emit('connection-finished', operation.data);
+          break;
+        default:
+          // nothing for now
+      }
     });
-    stdout.on('close', () => {
+
+    this.childProcess.stdout.on('close', () => {
       this.emit('finish');
     });
+
     stderr.on('data', (err) => {
       this.emit('error', err.toString());
     });
-    this.emit('start');
   }
 
   // Stop download
-  stop(): void {
+  stop() {
     if (this.childProcess) {
       this.childProcess.kill();
       this.childProcess = null;
@@ -65,7 +82,7 @@ export default class Download extends EventEmitter {
   }
 
   // Get axel command arguments
-  getCommandArgs(): Array<string> {
+  getCommandArgs() {
     const args = [];
 
     // download path
@@ -100,7 +117,7 @@ export default class Download extends EventEmitter {
   }
 
   // Check if axel downloader is installed
-  static checkAxel(): void {
+  static checkAxel() {
     const axelCheck = spawn('axel');
     axelCheck.on('error', () => {
       throw new Error('Axel is not installed or is not available in your path');
